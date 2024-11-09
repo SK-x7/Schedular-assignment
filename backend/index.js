@@ -1,16 +1,14 @@
-const { initializeApp } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const express = require('express');
 let admin=require("firebase-admin");
 let serviceAccount=require("./serviceAccountKey.json")
+const cors=require("cors")
 // const {} = require("firebase")
-const firebase=require("firebase/app");
-const {FieldValue,serverTimestamp}=require("firebase/firestore");
 // const app = initializeApp();
 const app=express();
 
 app.use(express.json())
-
+app.use(cors());
 app.listen(4000,()=>console.log("app running on 4000"));
 // initializeApp(app);
 admin.initializeApp({
@@ -18,7 +16,7 @@ admin.initializeApp({
 })
 const db=getFirestore();
 
-console.log(db);
+// console.log(db);
 
 
 app.get("/",(req,res,next)=>{
@@ -44,8 +42,6 @@ app.get("/getAllUsers",async (req,res,next)=>{
 app.post("/checkUserInDb",async (req,res,next)=>{
     console.log(req.body)
     try {
-        
-    
     const users=await db.collection("Users").where("clerkUserId","==",req.body.userId).get();
     console.log(users);
     if (!users.empty) {
