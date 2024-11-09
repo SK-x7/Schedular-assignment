@@ -50,11 +50,11 @@ app.post("/checkUserInDb",async (req,res,next)=>{
         
         console.log("User data:", userData);
         
-        return res.status(400).json({status:"success",message:"User found",userData});
+        return res.status(200).json({status:"success",message:"User found",userData});
       } else {
         // Document does not exist
         console.log("No user found with this ID");
-        return res.status(404).json({status:"fail",message:"User not found"});
+        return res.status(200).json({status:"fail",message:"User not found"});
       }
       
     }catch (error) {
@@ -73,7 +73,7 @@ app.post("/createUser",async (req,res,next)=>{
     try {
         
     
-    const userRef=db.collection("Users").add({
+    const userRef=await db.collection("Users").add({
         ...userData,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -84,7 +84,7 @@ app.post("/createUser",async (req,res,next)=>{
         // Document found, retrieve data
         const user=(await (await userRef).get()).data();
     
-        return res.status(400).json({status:"success",message:"User found",user});
+        return res.status(200).json({status:"success",message:"User found",user});
       } else {
         // Document does not exist
         console.log("No user found with this ID");
@@ -93,6 +93,7 @@ app.post("/createUser",async (req,res,next)=>{
       
       
     } catch (error) {
+        console.log("🔴")
         console.log(error);
         return res.status(404).json({status:"fail",message:"Error creating user"});
     }
