@@ -64,10 +64,6 @@ app.post("/checkUserInDb",async (req,res,next)=>{
       }
 })
 
-
-
-
-
 app.post("/createUser",async (req,res,next)=>{
     console.log(req.body)
     const userData=req.body.userData;
@@ -133,5 +129,51 @@ app.post("/createEvent",async (req,res,next)=>{
     }
 })
 
+
+app.get("/getAllEvents",async (req,res,next)=>{
+    
+    
+    const eventsRef=await db.collection("Events").get();
+    const allEvents=eventsRef.docs.map((doc)=>({
+        id:doc.id,
+        ...doc.data()
+    }))
+    console.log(allEvents);
+    return res.status(200).json({
+        status:"success",
+        message:"Users found successfully",
+        length:allEvents.length,
+        allEvents,
+    });
+})
+
+app.get("/getAllEvents/:id",async(req,res,next)=>{
+    console.log(req.params);
+    if(!req.params.id)  return res.status(404).json({
+        status:"fail",
+        message:"Please provide instructor id in params"});
+        
+    try {
+    const eventsRef=await db.collection("Events").where("instructorId","==",req.params.id).get();
+    if (!eventsRef.empty) {
+        // Document found, retrieve data
+        const events=eventsRef.docs.map((doc)=>({
+            id: doc.id,
+            ...doc.data()
+        }))
+        
+        return res.status(200).json({status:"success",message:`Events of instructor : ${req.params.id} found`,length:events.length,events});
+      } else {
+        // Document does not exist
+        console.log("No Events found with this ID");
+        return res.status(200).json({status:"fail",message:"Events not found"});
+      }
+      
+    }catch (error) {
+        console.log(error);
+        return res.status(404).json({status:"fail",message:"error fetching events by this user"}); 
+        // throw new Error(error);
+      }
+})
 
 
