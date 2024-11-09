@@ -46,11 +46,12 @@ app.post("/checkUserInDb",async (req,res,next)=>{
     console.log(users);
     if (!users.empty) {
         // Document found, retrieve data
-        const userData =await users.docs[0].data();
+        const user =users.docs[0];
+        const userData=await user.data();
+        const userId = user.id;
+        console.log("User data:", userData,userId);
         
-        console.log("User data:", userData);
-        
-        return res.status(200).json({status:"success",message:"User found",userData});
+        return res.status(200).json({status:"success",message:"User found",userData,userId});
       } else {
         // Document does not exist
         console.log("No user found with this ID");
@@ -99,6 +100,38 @@ app.post("/createUser",async (req,res,next)=>{
     }
 })
 
+
+app.post("/createEvent",async (req,res,next)=>{
+    console.log(req.body)
+    const eventData=req.body.eventData;
+    try {
+        
+    
+    const eventRef=await db.collection("Events").add({
+        ...eventData,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    })
+    
+    console.log(eventRef);
+    if (eventRef) {
+        // Document found, retrieve data
+        const event=(await (await eventRef).get()).data();
+    
+        return res.status(200).json({status:"success",message:"Event found",event});
+      } else {
+        // Document does not exist
+        console.log("No Event found with this ID");
+        return res.status(404).json({status:"fail",message:"Error creating event"});
+      }
+      
+      
+    } catch (error) {
+        console.log("🔴")
+        console.log(error);
+        return res.status(404).json({status:"fail",message:"Error creating event"});
+    }
+})
 
 
 

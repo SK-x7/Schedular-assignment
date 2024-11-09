@@ -9,6 +9,7 @@ function Header() {
   useEffect(() => {
     if (isLoaded && user) {
       console.log("User data:", user);
+      localStorage.setItem("userClerkId",user.id);
       handleUser(user); // Handle the user once loaded
     }
   }, [isLoaded, user]); // Dependencies for when isLoaded or user changes

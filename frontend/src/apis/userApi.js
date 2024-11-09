@@ -22,7 +22,9 @@ export async function checkUserInDb(userId){
     if(!res.data)   return false;
     // if(status===404)    return false;
     const data=res?.data;
-    if(data.status==="success"){return true;}
+    if(data.status==="success"){
+        localStorage.setItem("userId",data?.userId);
+        return true;}
     else if (data.status==="fail"){return false;}
     else return false;
 }
@@ -45,7 +47,6 @@ export async function handleUser(user) {
         clerkUserId:user.id,
         name:user.fullName,
     })
-    
     return newUser;
     
 
