@@ -3,6 +3,9 @@ const { getFirestore } = require('firebase-admin/firestore');
 const express = require('express');
 let admin=require("firebase-admin");
 let serviceAccount=require("./serviceAccountKey.json")
+// const {} = require("firebase")
+const firebase=require("firebase/app");
+const {FieldValue,serverTimestamp}=require("firebase/firestore");
 // const app = initializeApp();
 const app=express();
 
@@ -23,18 +26,31 @@ app.get("/",(req,res,next)=>{
 })
 
 app.get("/getAllUsers",async (req,res,next)=>{
-    return;
+    
+    
+    const users=await db.collection("Users").get();
+    const usersList=users.docs.map((doc)=>({
+        id:doc.id,
+        ...doc.data()
+    }))
+    console.log(users);
+    return res.status(200).json({
+        status:"success",
+        message:"Users found successfully",
+        usersList
+    });
 })
 
 app.post("/checkUserInDb",async (req,res,next)=>{
     console.log(req.body)
+    try {
+        
     
-    const userRef=db.collection("Users").doc(req.body.userId);
-    const userDoc = await userRef.get();
-    
-    if (userDoc.exists) {
+    const users=await db.collection("Users").where("clerkUserId","==",req.body.userId).get();
+    console.log(users);
+    if (!users.empty) {
         // Document found, retrieve data
-        const userData = userDoc.data;
+        const userData =await users.docs[0].data();
         
         console.log("User data:", userData);
         
@@ -44,6 +60,46 @@ app.post("/checkUserInDb",async (req,res,next)=>{
         console.log("No user found with this ID");
         return res.status(404).json({status:"fail",message:"User not found"});
       }
+      
+    }catch (error) {
+        return res.status(404).json({status:"fail",message:"error checking user"}) 
+        // throw new Error(error);
+      }
+})
+
+
+
+
+
+app.post("/createUser",async (req,res,next)=>{
+    console.log(req.body)
+    const userData=req.body.userData;
+    try {
+        
+    
+    const userRef=db.collection("Users").add({
+        ...userData,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    })
+    
+    console.log(userRef);
+    if (userRef) {
+        // Document found, retrieve data
+        const user=(await (await userRef).get()).data();
+    
+        return res.status(400).json({status:"success",message:"User found",user});
+      } else {
+        // Document does not exist
+        console.log("No user found with this ID");
+        return res.status(404).json({status:"fail",message:"Error creating user"});
+      }
+      
+      
+    } catch (error) {
+        console.log(error);
+        return res.status(404).json({status:"fail",message:"Error creating user"});
+    }
 })
 
 
