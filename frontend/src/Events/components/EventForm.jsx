@@ -28,7 +28,7 @@ function EventForm() {
                 placeholder="Description"
                 {...register("description", { 
                     required: "Description is required",
-                    maxLength: { value: 500, message: "Description must be less than 500 characters" },
+                    maxLength: { value: 250, message: "Description must be less than 250 characters" },
                     minLength: { value: 1, message: "Description must be at least 1 character long" }
                 })}
                 className="bg-gray-200 rounded-xl text-xl p-3"
