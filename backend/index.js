@@ -177,7 +177,6 @@ app.get("/getAllEvents/:id",async(req,res,next)=>{
 })
 
 
-
 app.post("/createAvailability/:userId", async (req, res, next) => {
   const { userId } = req.params;
   const { timeGap, availabilityData } = req.body;
@@ -290,5 +289,74 @@ app.post("/createAvailability/:userId", async (req, res, next) => {
     });
   }
 });
+
+app.get("/getAvailability/:id", async (req, res, next) => {
+  const userId = req.params.id;  // Instructor ID from URL parameter
+
+  if (!userId) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Please provide instructor id in the request parameters.",
+    });
+  }
+
+  try {
+    // Step 1: Fetch the Availability document for the given userId
+    const availabilityRef = db.collection("Availability");
+    const availabilityQuery = await availabilityRef
+      .where("instructorId", "==", userId)
+      .get();
+
+    if (availabilityQuery.empty) {
+      return res.status(404).json({
+        status: "fail",
+        message: `No availability found for instructorId: ${userId}`,
+      });
+    }
+
+    const availabilityDoc = availabilityQuery.docs[0];
+    const timeGap = availabilityDoc.data().timeGap;
+    const availabilityId = availabilityDoc.id;  // The availabilityId is the document ID
+
+    // Step 2: Fetch the corresponding Day_availability document
+    const dayAvailabilityRef = db.collection("Day_availability");
+    const dayAvailabilityQuery = await dayAvailabilityRef
+      .where("availabilityId", "==", availabilityId)
+      .get();
+
+    if (dayAvailabilityQuery.empty) {
+      return res.status(404).json({
+        status: "fail",
+        message: `No day availability found for availabilityId: ${availabilityId}`,
+      });
+    }
+
+    // Step 3: Extract the availabilityData from the Day_availability document
+    const dayAvailabilityDoc = dayAvailabilityQuery.docs[0];
+    const availabilityData = dayAvailabilityDoc.data().availabilityData;
+
+    // Step 4: Combine the timeGap and availabilityData in the required format
+    const response = {
+      timeGap: timeGap,
+      availabilityData: availabilityData,
+    };
+
+    // Step 5: Return the response
+    return res.status(200).json({
+      status: "success",
+      message: "Availability fetched successfully.",
+      data: response,
+    });
+
+  } catch (error) {
+    console.error("Error fetching availability:", error);
+    return res.status(500).json({
+      status: "fail",
+      message: "Error occurred while fetching availability.",
+      error: error.message,
+    });
+  }
+});
+
 
 
