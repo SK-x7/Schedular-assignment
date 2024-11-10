@@ -6,9 +6,9 @@ function Events() {
     if(!events) <div>No events yet</div>
     console.log(events);
     return (
-        <div className=" w-full flex flex-col gap-6">
+        <div className=" w-full flex flex-col gap-6 h-full">
         <h1 className="text-3xl">Events</h1>
-        <div className=" w-full px-6 rounded-lg grid grid-cols-2 gap-5">
+        <div className=" w-full px-6 rounded-lg grid grid-cols-2 gap-5 h-full overflow-y-scroll">
                 {
                     events&&events.map((event)=>(
                         <div className="bg-white rounded-lg px-5 py-5 flex flex-col gap-3 justify-between">

@@ -4,17 +4,17 @@ import { Outlet, Route, Routes } from "react-router-dom"
 
 function Layout() {
   return (
-    <div className="h-screen flex flex-col" >
+    <div className="!h-screen flex flex-col overflow-y-scroll" >
       <Header></Header>
-      <div className="w-full bg-white flex">
+      <div className="w-full bg-white flex h-[92%]">  
         
-      <div className="w-1/5 h-full flex flex-col py-4">
+      <div className="w-1/5 flex flex-col py-4">
       {/* <li>Dashboard</li> */}
       <li className="bg-blue-200 py-4 rounded-md">Events</li>
       <li className="bg-white py-2 rounded-md">Events</li>
       <li className="bg-white py-2 rounded-md">Events</li>
     </div>
-      <main className="w-4/5 px-6 bg-blue-100 pt-8">
+      <main className="w-4/5 h-full px-6 bg-blue-100 pt-8 ">
         <Outlet></Outlet>
       </main>
       </div>

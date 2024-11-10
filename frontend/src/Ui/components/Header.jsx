@@ -19,7 +19,7 @@ function Header() {
 
   return (
     <>
-      <div className="flex w-full bg-gray-400 justify-between items-center py-3 px-4">
+      <div className="flex w-full bg-gray-400 justify-between items-center py-3 px-4 h-[8%]">
         This is Header
         <button
           onClick={(e) => {
