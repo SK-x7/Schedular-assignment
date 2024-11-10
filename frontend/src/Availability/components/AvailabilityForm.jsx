@@ -11,7 +11,24 @@ function AvailabilityForm({initialAvailabilityData}) {
             defaultValues:{...initialAvailabilityData}
         }
     );
-    const onSubmit = data => console.log(data);
+    const onSubmit = (data) => {
+        console.log(data)
+        console.log(Object.entries(data));
+        const availabilityData=Object.entries(data).flatMap(([day,{isAvailable,startTime,endTime}])=>{
+            if(isAvailable){
+                const baseDate=new Date().toISOString().split('T')[0];
+                return [{
+                    day:day.toUpperCase(),
+                    startTime: new Date(`${baseDate}T${startTime}:00Z`),
+                    endTime: new Date(`${baseDate}T${endTime}:00Z`),
+                }]
+            }
+            
+            return [];
+        })
+        
+        console.log(availabilityData);
+    };
     console.log(errors);
     
     return (

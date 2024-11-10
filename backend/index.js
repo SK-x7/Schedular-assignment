@@ -177,3 +177,118 @@ app.get("/getAllEvents/:id",async(req,res,next)=>{
 })
 
 
+
+app.post("/createAvailability/:userId", async (req, res, next) => {
+  const { userId } = req.params;
+  const { timeGap, availabilityData } = req.body;
+
+  if (!userId) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Please provide instructor id in params",
+    });
+  }
+
+  if (!timeGap) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Please provide instructor timeGap",
+    });
+  }
+
+  const availabilityRef = db.collection("Availability");
+  const dayAvailabilityRef = db.collection("Day_availability");
+
+  let availabilityId;
+
+  try {
+    // Step 1: Check if the availability document exists for the instructor
+    const existingDocQuery = await availabilityRef
+      .where("instructorId", "==", userId)
+      .get();
+
+    if (!existingDocQuery.empty) {
+      // If a document exists, update its timeGap
+      const existingDocId = existingDocQuery.docs[0].id;
+      await availabilityRef.doc(existingDocId).update({
+        timeGap: timeGap,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      availabilityId = existingDocId; // Use the existing availabilityId
+      console.log(`Updated existing availability for instructorId: ${userId}`);
+    } else {
+      // If no document exists, create a new availability document
+      const newAvailabilityDoc = await availabilityRef.add({
+        instructorId: userId,
+        timeGap: timeGap,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      availabilityId = newAvailabilityDoc.id;
+      console.log(`Created new availability for instructorId: ${userId}`);
+    }
+
+    // If no availabilityData exists or it’s invalid, send a success response early
+    if (!availabilityData || !Array.isArray(availabilityData)) {
+      return res.status(200).json({
+        status: "success",
+        message: "Availability Time gap updated successfully.",
+      });
+    }
+
+    // Step 2: Filter duplicates based on day, startTime, and endTime
+    const uniqueAvailabilityData = availabilityData.filter((value, index, self) => {
+      return index === self.findIndex((t) => (
+        t.day === value.day && t.startTime === value.startTime && t.endTime === value.endTime
+      ));
+    });
+
+    // Step 3: Delete all existing Day_availability records for this availabilityId
+    const dayAvailabilityQuery = await dayAvailabilityRef
+      .where("availabilityId", "==", availabilityId)
+      .get();
+
+    const batch = db.batch();
+    dayAvailabilityQuery.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    // Now handle the creation of new availability for each day
+    const updatedAvailabilityData = [];
+    uniqueAvailabilityData.forEach((availability) => {
+      updatedAvailabilityData.push({
+        day: availability.day,
+        startTime: availability.startTime,
+        endTime: availability.endTime,
+        status: availability.status || "available",
+      });
+    });
+
+    // Set the updated availability data in the Day_availability document
+    const dayAvailabilityDocRef = dayAvailabilityRef.doc(availabilityId);
+
+    // Here, we are directly setting the data without using arrayUnion
+    batch.set(dayAvailabilityDocRef, {
+      availabilityId: availabilityId,
+      availabilityData: updatedAvailabilityData,
+    });
+
+    // Commit the batch operation to ensure all updates and deletes happen atomically
+    await batch.commit();
+
+    // Return success response
+    return res.status(200).json({
+      status: "success",
+      message: "Availability updated successfully.",
+    });
+  } catch (error) {
+    console.error("Error in creating/updating availability:", error);
+    return res.status(500).json({
+      status: "fail",
+      message: "Error occurred while creating/updating availability.",
+      error: error.message,
+    });
+  }
+});
+
+
