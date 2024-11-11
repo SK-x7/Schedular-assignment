@@ -2,9 +2,10 @@ import {Controller, useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
 import { availabilitySchema } from "../../utils/formvalidators";
 import { timeSlots } from "../../data/data";
+import { createAvailability } from "../../apis/availabilityApi";
 
 
-function AvailabilityForm({initialAvailabilityData}) {
+function AvailabilityForm({initialAvailabilityData,gap}) {
     const { register, handleSubmit,control,setValue,watch, formState: { errors } } = useForm(
         {
             resolver:zodResolver(availabilitySchema),
@@ -14,6 +15,7 @@ function AvailabilityForm({initialAvailabilityData}) {
     const onSubmit = (data) => {
         console.log(data)
         console.log(Object.entries(data));
+        const timeGap=data?.timeGap;
         const availabilityData=Object.entries(data).flatMap(([day,{isAvailable,startTime,endTime}])=>{
             if(isAvailable){
                 const baseDate=new Date().toISOString().split('T')[0];
@@ -28,6 +30,14 @@ function AvailabilityForm({initialAvailabilityData}) {
         })
         
         console.log(availabilityData);
+        console.log("======================================");
+        console.log(timeGap);
+        const obj={
+            timeGap,
+            availabilityData
+        }
+        createAvailability(obj);
+        alert("Request made");
     };
     console.log(errors);
     
@@ -40,7 +50,7 @@ function AvailabilityForm({initialAvailabilityData}) {
                 return (<><div key={day} className="flex items-center space-x-3 mb-3">
                     <Controller name={`${day}.isAvailable`} control={control} render={
                         ({field})=>(
-                            <input type="checkbox" className="capitalize h-4 w-4" checked={field.value||false} onChange={(e) => {
+                            <input type="checkbox" defaultChecked={initialAvailabilityData}  className="capitalize h-4 w-4" checked={field.value||false} onChange={(e) => {
                                 const isChecked = e.target.checked;
                                 setValue(`${day}.isAvailable`, isChecked);
                                 
@@ -98,9 +108,10 @@ function AvailabilityForm({initialAvailabilityData}) {
         }
                        <div className="flex space-x-2">
                     <span className="">Minimum gap between bookings (in minutes) : </span>
-                    <input type="number" {
+                    <input type="number" defaultValue={gap} {
                         ...register("timeGap",{
                             valueAsNumber:true,
+                            
                             
                         })}
                         className="w-16 pl-2"

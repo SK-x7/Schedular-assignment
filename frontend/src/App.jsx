@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import AvailabilityPage from "./Availability/components/AvailabilityPage"
 import Events from "./Events/components/Events"
 import {fetchEventsFromApi as eventsLoader} from "./Events/components/Events"
+import {fetchAvailabilityFromApi as availabilityLoader} from "./Availability/components/AvailabilityPage"
 import Layout from "./Ui/Layout"
 
 const router=createBrowserRouter([
@@ -17,7 +18,7 @@ const router=createBrowserRouter([
       {
       path:"/availability",
       element:<AvailabilityPage></AvailabilityPage>,
-      // loader:eventsLoader
+      loader:availabilityLoader
     },
   
   

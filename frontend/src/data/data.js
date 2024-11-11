@@ -44,7 +44,7 @@ export const timeSlots = [
     "21:00",
     "21:30",
     "22:00",
-    "22:30",
+    "22:30",  
     "23:00",
     "23:30",
   ];
@@ -59,3 +59,17 @@ export const timeSlots = [
     sunday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
     timeGap: 0,
   };
+  
+  
+  export const availabilityFromApi = {
+    monday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+    tuesday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+    wednesday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+    thursday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+    friday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+    saturday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+    sunday: { isAvailable: false, startTime: "09:00", endTime: "17:00" },
+
+  };
+  
+  
