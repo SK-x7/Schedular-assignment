@@ -39,8 +39,8 @@ export async function fetchAvailabilityFromApi() {
             const dayKey = availability?.day.toLowerCase();
             if (availabilityFromApi[dayKey]) {
                 availabilityFromApi[dayKey].isAvailable = availability.status === "available";
-                availabilityFromApi[dayKey].startTime = (availability.startTime);
-                availabilityFromApi[dayKey].endTime = (availability.endTime);
+                availabilityFromApi[dayKey].startTime = (new Date(availability?.startTime).toISOString().slice(11,16))||"09:00";
+                availabilityFromApi[dayKey].endTime = (new Date(availability?.endTime).toISOString().slice(11,16))||"17:00";
             }
         });
         // availabilityFromApi.timeGap=availabilityResponse?.data?.timeGap
