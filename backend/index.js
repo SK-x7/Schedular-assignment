@@ -177,6 +177,32 @@ app.get("/getAllEvents/:id",async(req,res,next)=>{
 })
 
 
+app.get("/getAllEvents",async(req,res,next)=>{
+        
+    try {
+    const eventsRef=await db.collection("Events").get();
+    if (!eventsRef.empty) {
+        // Document found, retrieve data
+        const events=eventsRef.docs.map((doc)=>({
+            id: doc.id,
+            ...doc.data()
+        }))
+        
+        return res.status(200).json({status:"success",message:`All events found`,length:events.length,events});
+      } else {
+        // Document does not exist
+        console.log("No Events found");
+        return res.status(200).json({status:"fail",message:"Events not found"});
+      }
+      
+    }catch (error) {
+        console.log(error);
+        return res.status(404).json({status:"fail",message:"error fetching all events"}); 
+        // throw new Error(error);
+      }
+})
+
+
 app.post("/createAvailability/:userId", async (req, res, next) => {
   const { userId } = req.params;
   const { timeGap, availabilityData } = req.body;

@@ -38,3 +38,23 @@ export async function getAllEventsByUser() {
     console.log(data)
     return data;
 }
+
+
+export async function getAllEvents() {
+    let userId;
+    if(localStorage.getItem("userId")){
+        userId=localStorage.getItem("userId");
+    }else{
+        alert("User id not available,login again");
+        return null;
+    }
+
+    const res=await axios.get(`${API_URL}/getAllEvents`);   
+    if(!res?.data) {alert("Error");
+    console.log("Error fetching events all from server");
+    return null;
+};
+    const data=res?.data;
+    console.log(data)
+    return data;
+}

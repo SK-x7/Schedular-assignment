@@ -10,9 +10,9 @@ function Layout() {
         
       <div className="w-1/5 flex flex-col py-4">
       {/* <li>Dashboard</li> */}
-      <li className="bg-blue-200 py-4 rounded-md">Events</li>
-      <li className="bg-white py-2 rounded-md">Events</li>
-      <li className="bg-white py-2 rounded-md">Events</li>
+      <li className="bg-blue-200 py-4 rounded-md">My Events</li>
+      <li className="bg-white py-2 rounded-md">My availabiity</li>
+      <li className="bg-white py-2 rounded-md">Book a event</li>
     </div>
       <main className="w-4/5 h-full px-6 bg-blue-100 pt-8 ">
         <Outlet></Outlet>
