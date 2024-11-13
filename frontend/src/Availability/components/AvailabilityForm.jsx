@@ -40,7 +40,8 @@ function AvailabilityForm({initialAvailabilityData,gap}) {
         alert("Request made");
     };
     console.log(errors);
-    
+    console.log(initialAvailabilityData,gap);
+    // if(!initialAvailabilityData||!gap)    return<div></div>
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
         {

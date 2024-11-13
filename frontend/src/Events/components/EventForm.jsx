@@ -1,17 +1,25 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Link, useLoaderData } from 'react-router-dom';
+import { getAvailability } from '../../apis/availabilityApi';
 import { createEvent } from '../../apis/eventApi';
 
 function EventForm() {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    
+    const data=useLoaderData();
     const onSubmit = (data) => {console.log(data)
-    createEvent(data);
+        if(data)    createEvent(data);
     }
     ;
     
+    if(!data) return <div className='flex flex-col items-center justify-center gap-5'>
+        
+    <h1 className='text-2xl text-red-600'>Please set your availability first before creating event</h1>
+    <Link to="/availability" className="mx-auto bg-black text-white py-3 px-4 rounded-xl">Go to availability page</Link>;
+    </div>
+    
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-blue-200 w-1/2 m-auto py-6 px-3 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-blue-200 w-1/2 mx-auto py-6 px-3 gap-4">
             
             {/* Title Input */}
             <input 
@@ -53,5 +61,12 @@ function EventForm() {
         </form>
     );
 }
+export async function fetchAvailabilityFromApi() {
+    const availabilityResponse=await getAvailability();
+    if(availabilityResponse?.status==="fail"&availabilityResponse.length===0) return false;
+    else return true; 
+}
+
+
 
 export default EventForm;

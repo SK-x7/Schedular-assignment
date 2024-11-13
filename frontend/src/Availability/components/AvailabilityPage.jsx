@@ -16,13 +16,13 @@ function AvailabilityPage() {
     //     data?.availabilityData.find(d=>d.day===day.toUpperCase());
         
     // })
-    
+    if(!data||data===null)   return <div>Loadinggggggg</div>;
     return (
         <div className="w-full flex flex-col gap-6 h-full">
             <h1 className="text-3xl">Availability</h1>
             <div>
                 
-            <AvailabilityForm initialAvailabilityData={data?.availabilityFromApi||defaultAvailability} gap={data?.timeGap}></AvailabilityForm>
+            <AvailabilityForm initialAvailabilityData={data?.availabilityFromApi||availabilityFromApi} gap={data?.timeGap||0}></AvailabilityForm>
             </div>
         </div>
     )
@@ -44,9 +44,8 @@ export async function fetchAvailabilityFromApi() {
             }
         });
         // availabilityFromApi.timeGap=availabilityResponse?.data?.timeGap
-        return {availabilityFromApi,timeGap:availabilityResponse?.data?.timeGap};
+        return {availabilityFromApi,timeGap:availabilityResponse?.data?.timeGap||0};
     }
-    else return defaultAvailability;
-    
-    // return null; 
+    else if(availabilityResponse?.status==="fail"&availabilityResponse.length===0) return {availabilityFromApi,timeGap:0};
+    return null; 
 }

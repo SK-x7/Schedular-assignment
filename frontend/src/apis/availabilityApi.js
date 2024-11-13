@@ -32,12 +32,12 @@ export async function getAvailability(obj) {
     }
     
     const res=await axios.get(`${API_URL}/getAvailability/${userId}`);   
-    if(!res?.data) {
+    console.log(res);
+    if(!res.data) {
         alert("Error");
         console.log("Error fetching availability from server");
         return null;
     };
-    
     const data=res?.data;
     console.log(data)
     return data;
