@@ -1,7 +1,6 @@
 import { createBooking, getBookings } from "../../apis/bookingsApi";
 import { availabilityFromApi, defaultAvailability } from "../../data/data";
-import { generateAvailableDates, generateAvailableSlots } from "../../utils/bookingHelper";
-import { ClerkProvider } from '@clerk/clerk-react'
+import { generateAvailableSlots } from "../../utils/bookingHelper";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { format } from "date-fns";
@@ -10,8 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { bookingSchema } from "../../utils/formvalidators";
 import { useEffect } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
-import axios from "axios";
+import { useUser } from "@clerk/clerk-react";
 import { useLoaderData, useLocation } from "react-router-dom";
 import { getAvailability } from "../../apis/availabilityApi";
 
@@ -197,9 +195,9 @@ export async function fetchEventAvailabilityAndBookingsFromApi({params}){
     }
     console.log(availabilityFromApi);
     // const bookingSlots=generateAvailableDates(availabilityFromApi,bookingsResponse?.bookings)
-    return (generateAvailableSlots(availabilityFromApi,bookingsResponse?.bookings,availabilityResponse?.data?.timeGap,Number(localStorage.getItem("currentEventDuration"))));
+    return (generateAvailableSlots(availabilityFromApi,bookingsResponse?.bookings||[],availabilityResponse?.data?.timeGap,Number(localStorage.getItem("currentEventDuration"))));
     
-    
+    return null;
 }
 
 

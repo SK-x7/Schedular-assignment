@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL="http://127.0.0.1:4000"
+const API_URL="http://127.0.0.1:4000/api/v1"
 
 export async function createAvailability(obj) {
     let userId;
@@ -10,7 +10,7 @@ export async function createAvailability(obj) {
         return null;
     }
     
-    const res=await axios.post(`${API_URL}/createAvailability/${userId}`,obj);   
+    const res=await axios.post(`${API_URL}/availability/createAvailability/${userId}`,obj);   
     if(!res?.data) {
         alert("Error");
         console.log("Error updating events");
@@ -31,7 +31,7 @@ export async function getAvailability(id) {
         return null;
     }
     
-    const res=await axios.get(`${API_URL}/getAvailability/${id}`);   
+    const res=await axios.get(`${API_URL}/availability/getAvailability/${id}`);   
     console.log(res);
     if(!res.data) {
         alert("Error");

@@ -45,7 +45,6 @@ export async function fetchAllEventsFromApi() {
     if(eventsData?.status==="success")  return eventsData.allEvents;
     else return null;
     
-    return null;
 }
 
 export default AllEvents

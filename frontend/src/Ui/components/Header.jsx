@@ -1,12 +1,9 @@
 import { SignedIn, SignedOut, SignInButton, useAuth, UserButton, useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { checkBackendConnection, handleUser } from "../../apis/userApi";
-// import {google} from "googleapis"
 
 function Header() {
   const { user, isLoaded } = useUser(); // Always call useUser() unconditionally
-  const {getToken}=useAuth();
-  // Always call useEffect() unconditionally as well
   useEffect(() => {
     if (isLoaded && user) {
       console.log("User data:", user);

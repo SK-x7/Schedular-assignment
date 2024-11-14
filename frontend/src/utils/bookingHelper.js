@@ -1,6 +1,4 @@
-import { availabilityFromApi } from "../data/data";
 import dayjs from "dayjs";
-// import { utcToZonedTime, format as formatTz } from 'date-fns';
 
 function isSlotBooked(bookings,date, startTime, endTime) {
     return bookings.some(booking => {

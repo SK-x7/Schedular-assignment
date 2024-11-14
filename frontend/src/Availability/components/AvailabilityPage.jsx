@@ -6,17 +6,10 @@ import AvailabilityForm from "./AvailabilityForm"
 function AvailabilityPage() {
     
     const data=useLoaderData();
-    const finalData={};
-    
-   
-    
     
     console.log(data,"=============================================================================================");
-    // ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].forEach((day)=>{
-    //     data?.availabilityData.find(d=>d.day===day.toUpperCase());
-        
-    // })
     if(!data||data===null)   return <div>Loadinggggggg</div>;
+    
     return (
         <div className="w-full flex flex-col gap-6 h-full">
             <h1 className="text-3xl">Availability</h1>

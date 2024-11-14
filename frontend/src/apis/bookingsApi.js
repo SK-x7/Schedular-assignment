@@ -1,9 +1,9 @@
 import axios from "axios";
-const API_URL="http://127.0.0.1:4000"
+const API_URL="http://127.0.0.1:4000/api/v1"
 
 export async function getBookings(userId,eventId) {
     
-    const res=await axios.get(`${API_URL}/getBookingsOfEvent/${userId}/${eventId}`);   
+    const res=await axios.get(`${API_URL}/bookings/getBookingsOfEvent/${userId}/${eventId}`);   
     if(!res?.data) {
         alert("Error");
         console.log("Error fetching bookings of this event from server");
@@ -16,7 +16,7 @@ export async function getBookings(userId,eventId) {
 }
 export async function createBooking(obj) {
     
-    const res=await axios.post(`${API_URL}/createBooking`,{
+    const res=await axios.post(`${API_URL}/bookings/createBooking`,{
         bookingData: obj
     });   
     if(!res?.data) {

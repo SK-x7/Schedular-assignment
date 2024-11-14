@@ -10,7 +10,7 @@ exports.getAllEvents = async(req,res,next)=>{
             ...doc.data()
         }))
         
-        return res.status(200).json({status:"success",message:`All events found`,length:events.length,events});
+        return res.status(200).json({status:"success",message:`All events found`,length:events.length,allEvents:events});
       } else {
         // Document does not exist
         console.log("No Events found");
