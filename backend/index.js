@@ -5,15 +5,16 @@ const cors=require("cors")
 
 const bookingRouter=require("./routes/bookingRoute");
 const userRouter=require("./routes/userRoute");
+const eventRouter=require("./routes/eventRoute");
 
-app.use(express.json())
 app.use(cors());
+app.use(express.json())
 app.listen(4000,()=>console.log("app running on 4000"));
 
 
-// console.log(db);
 app.use("/api/v1/bookings",bookingRouter);
 app.use("/api/v1/users",userRouter);
+app.use("/api/v1/events",eventRouter);
 
 app.get("/",(req,res,next)=>{
     return res.status(200).json({status:"successs",message:"Everything fine here,app runnning successfully"});
@@ -96,110 +97,97 @@ app.get("/",(req,res,next)=>{
 // })
 
 
-app.post("/createEvent",async (req,res,next)=>{
-    console.log(req.body)
-    const eventData=req.body.eventData;
-    try {
+// app.post("/createEvent",
+// async (req,res,next)=>{
+//     console.log(req.body)
+//     const eventData=req.body.eventData;
+//     try {
         
     
-    const eventRef=await db.collection("Events").add({
-        ...eventData,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    })
+//     const eventRef=await db.collection("Events").add({
+//         ...eventData,
+//       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+//     })
     
-    console.log(eventRef);
-    if (eventRef) {
-        // Document found, retrieve data
-        const event=(await (await eventRef).get()).data();
+//     console.log(eventRef);
+//     if (eventRef) {
+//         // Document found, retrieve data
+//         const event=(await (await eventRef).get()).data();
     
-        return res.status(200).json({status:"success",message:"Event found",event});
-      } else {
-        // Document does not exist
-        console.log("No Event found with this ID");
-        return res.status(404).json({status:"fail",message:"Error creating event"});
-      }
+//         return res.status(200).json({status:"success",message:"Event found",event});
+//       } else {
+//         // Document does not exist
+//         console.log("No Event found with this ID");
+//         return res.status(404).json({status:"fail",message:"Error creating event"});
+//       }
       
       
-    } catch (error) {
-        console.log("🔴")
-        console.log(error);
-        return res.status(404).json({status:"fail",message:"Error creating event"});
-    }
-})
+//     } catch (error) {
+//         console.log("🔴")
+//         console.log(error);
+//         return res.status(404).json({status:"fail",message:"Error creating event"});
+//     }
+// })
 
 
-app.get("/getAllEvents",async (req,res,next)=>{
-    
-    
-    const eventsRef=await db.collection("Events").get();
-    const allEvents=eventsRef.docs.map((doc)=>({
-        id:doc.id,
-        ...doc.data()
-    }))
-    console.log(allEvents);
-    return res.status(200).json({
-        status:"success",
-        message:"Users found successfully",
-        length:allEvents.length,
-        allEvents,
-    });
-})
 
-app.get("/getAllEvents/:id",async(req,res,next)=>{
-    console.log(req.params);
-    if(!req.params.id)  return res.status(404).json({
-        status:"fail",
-        message:"Please provide instructor id in params"});
+// app.get("/getAllEvents/:id",
+// async(req,res,next)=>{
+//     console.log(req.params);
+//     if(!req.params.id)  return res.status(404).json({
+//         status:"fail",
+//         message:"Please provide instructor id in params"});
         
-    try {
-    const eventsRef=await db.collection("Events").where("instructorId","==",req.params.id).get();
-    if (!eventsRef.empty) {
-        // Document found, retrieve data
-        const events=eventsRef.docs.map((doc)=>({
-            id: doc.id,
-            ...doc.data()
-        }))
+//     try {
+//     const eventsRef=await db.collection("Events").where("instructorId","==",req.params.id).get();
+//     if (!eventsRef.empty) {
+//         // Document found, retrieve data
+//         const events=eventsRef.docs.map((doc)=>({
+//             id: doc.id,
+//             ...doc.data()
+//         }))
         
-        return res.status(200).json({status:"success",message:`Events of instructor : ${req.params.id} found`,length:events.length,events});
-      } else {
-        // Document does not exist
-        console.log("No Events found with this ID");
-        return res.status(200).json({status:"fail",message:"Events not found"});
-      }
+//         return res.status(200).json({status:"success",message:`Events of instructor : ${req.params.id} found`,length:events.length,events});
+//       } else {
+//         // Document does not exist
+//         console.log("No Events found with this ID");
+//         return res.status(200).json({status:"fail",message:"Events not found"});
+//       }
       
-    }catch (error) {
-        console.log(error);
-        return res.status(404).json({status:"fail",message:"error fetching events by this user"}); 
-        // throw new Error(error);
-      }
-})
+//     }catch (error) {
+//         console.log(error);
+//         return res.status(404).json({status:"fail",message:"error fetching events by this user"}); 
+//         // throw new Error(error);
+//       }
+// })
 
 
-app.get("/getAllEvents",async(req,res,next)=>{
+// app.get("/getAllEvents",
+// async(req,res,next)=>{
         
-    try {
-    const eventsRef=await db.collection("Events").get();
-    if (!eventsRef.empty) {
-        // Document found, retrieve data
-        const events=eventsRef.docs.map((doc)=>({
-            id: doc.id,
-            ...doc.data()
-        }))
+//     try {
+//     const eventsRef=await db.collection("Events").get();
+//     if (!eventsRef.empty) {
+//         // Document found, retrieve data
+//         const events=eventsRef.docs.map((doc)=>({
+//             id: doc.id,
+//             ...doc.data()
+//         }))
         
-        return res.status(200).json({status:"success",message:`All events found`,length:events.length,events});
-      } else {
-        // Document does not exist
-        console.log("No Events found");
-        return res.status(200).json({status:"fail",message:"Events not found"});
-      }
+//         return res.status(200).json({status:"success",message:`All events found`,length:events.length,events});
+//       } else {
+//         // Document does not exist
+//         console.log("No Events found");
+//         return res.status(200).json({status:"fail",message:"Events not found"});
+//       }
       
-    }catch (error) {
-        console.log(error);
-        return res.status(404).json({status:"fail",message:"error fetching all events"}); 
-        // throw new Error(error);
-      }
-})
+//     }catch (error) {
+//         console.log(error);
+//         return res.status(404).json({status:"fail",message:"error fetching all events"}); 
+//         // throw new Error(error);
+//       }
+// })
 
 
 app.post("/createAvailability/:userId", async (req, res, next) => {
