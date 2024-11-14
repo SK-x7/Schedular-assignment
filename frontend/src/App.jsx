@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { Toaster } from "react-hot-toast"
 
 import Layout from "./Ui/Layout"
 import AllEvents from "./Events/components/AllEvents"
@@ -51,7 +52,10 @@ const router=createBrowserRouter([
 
 function App() {
   return (
+    <>
+    <Toaster/>
     <RouterProvider router={router}></RouterProvider>
+    </>
   )
 }
 

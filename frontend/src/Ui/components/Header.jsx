@@ -1,5 +1,6 @@
 import { SignedIn, SignedOut, SignInButton, useAuth, UserButton, useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
+import { toast } from "react-hot-toast";
 import { checkBackendConnection, handleUser } from "../../apis/userApi";
 
 function Header() {
@@ -10,6 +11,7 @@ function Header() {
       localStorage.setItem("userClerkId",user.id);
       localStorage.setItem("userEmailId",user?.emailAddresses[0]?.emailAddress);
       handleUser(user); // Handle the user once loaded
+      toast.success("hhhhhh")
     }
   }, [isLoaded, user]); // Dependencies for when isLoaded or user changes
 
