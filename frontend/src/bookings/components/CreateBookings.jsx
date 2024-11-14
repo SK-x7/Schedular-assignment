@@ -1,5 +1,3 @@
-// import { useLoaderData, useLocation } from "react-router-dom";
-// import { getAvailability } from "../../apis/availabilityApi";
 import { createBooking, getBookings } from "../../apis/bookingsApi";
 import { availabilityFromApi, defaultAvailability } from "../../data/data";
 import { generateAvailableDates, generateAvailableSlots } from "../../utils/bookingHelper";
@@ -58,6 +56,7 @@ function CreateBookings() {
         (day) => day.date === format(selectedDate, "yyyy-MM-dd")
       )?.timeSlots || []
     : [];
+
     console.log(availabledays);
     
     useEffect(()=>{
@@ -175,7 +174,7 @@ export default CreateBookings
 export async function fetchEventAvailabilityAndBookingsFromApi({params}){
     console.log(params);
     const obj=[];
-    const availabilityResponse=await getAvailability();
+    const availabilityResponse=await getAvailability(params.instructorId);
     const bookingsResponse=await getBookings(params.instructorId,params.eventId);
     console.log(availabilityResponse,bookingsResponse);
     if(availabilityResponse?.status==="success"){

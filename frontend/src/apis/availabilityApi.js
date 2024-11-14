@@ -22,7 +22,7 @@ export async function createAvailability(obj) {
     return data;
 }
 
-export async function getAvailability(obj) {
+export async function getAvailability(id) {
     let userId;
     if(localStorage.getItem("userId")){
         userId=localStorage.getItem("userId");
@@ -31,7 +31,7 @@ export async function getAvailability(obj) {
         return null;
     }
     
-    const res=await axios.get(`${API_URL}/getAvailability/${userId}`);   
+    const res=await axios.get(`${API_URL}/getAvailability/${id}`);   
     console.log(res);
     if(!res.data) {
         alert("Error");
