@@ -18,6 +18,7 @@ function AvailabilityForm({initialAvailabilityData,gap}) {
         const timeGap=data?.timeGap;
         const availabilityData=Object.entries(data).flatMap(([day,{isAvailable,startTime,endTime}])=>{
             if(isAvailable){
+                console.log(startTime);
                 const baseDate=new Date().toISOString().split('T')[0];
                 return [{
                     day:day.toUpperCase(),

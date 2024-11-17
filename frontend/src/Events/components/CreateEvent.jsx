@@ -1,5 +1,4 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { getAvailability } from "../../apis/availabilityApi";
 import EventForm from "./EventForm"
 
 function CreateEvent() {

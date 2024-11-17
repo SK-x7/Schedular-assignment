@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { getAvailability } from "../../apis/availabilityApi";
+import { getAvailabilityOfUser } from "../../apis/availabilityApi";
 import { availabilityFromApi, defaultAvailability } from "../../data/data"
 import AvailabilityForm from "./AvailabilityForm"
 
@@ -24,7 +24,7 @@ function AvailabilityPage() {
 export default AvailabilityPage
 
 export async function fetchAvailabilityFromApi() {
-    const availabilityResponse=await getAvailability();
+    const availabilityResponse=await getAvailabilityOfUser();
     console.log(availabilityResponse);
     if(availabilityResponse?.status==="success"){
         

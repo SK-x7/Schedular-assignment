@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLoaderData } from 'react-router-dom';
-import { getAvailability } from '../../apis/availabilityApi';
+import { getAvailabilityOfUser } from '../../apis/availabilityApi';
 import { createEvent } from '../../apis/eventApi';
 
 function EventForm() {
@@ -62,7 +62,7 @@ function EventForm() {
     );
 }
 export async function fetchAvailabilityFromApi() {
-    const availabilityResponse=await getAvailability();
+    const availabilityResponse=await getAvailabilityOfUser();
     if(availabilityResponse?.status==="fail"&availabilityResponse.length===0) return false;
     else return true; 
 }

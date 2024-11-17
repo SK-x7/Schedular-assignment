@@ -1,5 +1,5 @@
 import { createBooking, getBookings } from "../../apis/bookingsApi";
-import { availabilityFromApi, defaultAvailability } from "../../data/data";
+import { availabilityFromApi, defaultAvailability, instructorEventAvailabilityFromApi } from "../../data/data";
 import { generateAvailableSlots } from "../../utils/bookingHelper";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -11,7 +11,7 @@ import { bookingSchema } from "../../utils/formvalidators";
 import { useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useLoaderData, useLocation } from "react-router-dom";
-import { getAvailability } from "../../apis/availabilityApi";
+import { getAvailability, getAvailabilityOfUser } from "../../apis/availabilityApi";
 
 
 
@@ -54,8 +54,9 @@ function CreateBookings() {
         (day) => day.date === format(selectedDate, "yyyy-MM-dd")
       )?.timeSlots || []
     : [];
-
-    console.log(availabledays);
+      
+    //ANCHOR - 
+    // console.log(availabledays);
     
     useEffect(()=>{
       if(selectedDate){
@@ -169,33 +170,34 @@ let baseDate=new Date(data.date).toISOString().slice(0,10);
 export default CreateBookings
 
 
+//FIXME - 
 export async function fetchEventAvailabilityAndBookingsFromApi({params}){
     console.log(params);
     const obj=[];
     const availabilityResponse=await getAvailability(params.instructorId);
     const bookingsResponse=await getBookings(params.instructorId,params.eventId);
-    console.log(availabilityResponse,bookingsResponse);
+    console.log(availabilityResponse,bookingsResponse,"1️⃣7️⃣6️⃣");
     if(availabilityResponse?.status==="success"){
-        console.log(availabilityResponse);
+        // console.log(availabilityResponse);
         await availabilityResponse?.data?.availabilityData.forEach((availability) => {
             const dayKey = availability?.day.toLowerCase();
-            if (availabilityFromApi[dayKey]) {
-                availabilityFromApi[dayKey].isAvailable = availability.status === "available";
-                availabilityFromApi[dayKey].startTime = (new Date(availability?.startTime).toISOString().slice(11,16))||"09:00";
-                availabilityFromApi[dayKey].endTime = (new Date(availability?.endTime).toISOString().slice(11,16))||"17:00";
+            if (instructorEventAvailabilityFromApi[dayKey]) {
+                instructorEventAvailabilityFromApi[dayKey].isAvailable = availability.status === "available";
+                instructorEventAvailabilityFromApi[dayKey].startTime = (new Date(availability?.startTime).toISOString().slice(11,16))||"09:00";
+                instructorEventAvailabilityFromApi[dayKey].endTime = (new Date(availability?.endTime).toISOString().slice(11,16))||"17:00";
             }
         });
-        // availabilityFromApi.timeGap=availabilityResponse?.data?.timeGap
-        obj.push({availabilityFromApi,timeGap:availabilityResponse?.data?.timeGap})
+        // instructorEventAvailabilityFromApi.timeGap=availabilityResponse?.data?.timeGap
+        obj.push({instructorEventAvailabilityFromApi,timeGap:availabilityResponse?.data?.timeGap})
         // return obj;
     }
     if(bookingsResponse?.status==="success"&&bookingsResponse?.length>0){
         obj.push(bookingsResponse?.bookings);
-        console.log(obj);
+        // console.log(obj);
     }
-    console.log(availabilityFromApi);
-    // const bookingSlots=generateAvailableDates(availabilityFromApi,bookingsResponse?.bookings)
-    return (generateAvailableSlots(availabilityFromApi,bookingsResponse?.bookings||[],availabilityResponse?.data?.timeGap,Number(localStorage.getItem("currentEventDuration"))));
+    // console.log(instructorEventAvailabilityFromApi);
+    // const bookingSlots=generateAvailableDates(instructorEventAvailabilityFromApi,bookingsResponse?.bookings)
+    return (generateAvailableSlots(instructorEventAvailabilityFromApi,bookingsResponse?.bookings||[],availabilityResponse?.data?.timeGap,Number(localStorage.getItem("currentEventDuration"))));
     
     return null;
 }
