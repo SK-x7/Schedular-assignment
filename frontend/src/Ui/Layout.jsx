@@ -20,6 +20,12 @@ function Layout() {
             My Availability
           </Link>
           <Link
+            to="/bookings"
+            className="bg-blue-200 py-4 rounded-md text-center"
+          >
+            My Bookings
+          </Link>
+          <Link
             to="/events"
             className="bg-blue-200 py-4 rounded-md text-center"
           >

@@ -13,6 +13,7 @@ import {fetchAvailabilityFromApi as availabilityLoader} from "./Availability/com
 import {fetchAvailabilityFromApi as createEventLoader} from "./Events/components/EventForm"
 import {fetchAllEventsFromApi as allEventsLoader} from "./Events/components/AllEvents"
 import {fetchEventAvailabilityAndBookingsFromApi as createBookingsLoader} from "./bookings/components/createBookings"
+import AllBookings from "./bookings/components/AllBookings"
 
 const router=createBrowserRouter([
   {
@@ -32,6 +33,11 @@ const router=createBrowserRouter([
       {
       path:"/book-event",
       element:<AllEvents></AllEvents>,
+      loader:allEventsLoader
+    },
+      {
+      path:"/bookings",
+      element:<AllBookings></AllBookings>,
       loader:allEventsLoader
     },
       {

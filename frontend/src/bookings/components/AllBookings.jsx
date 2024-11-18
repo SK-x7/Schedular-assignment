@@ -1,13 +1,13 @@
 import { Link, useLoaderData } from "react-router-dom";
 import { getAllEvents } from "../../apis/eventApi";
 
-function AllEvents() {
+function AllBookings() {
     const allEvents = useLoaderData();
     if(!allEvents) return <div>No events yet</div>
     console.log(allEvents);
     return (    
         <div className=" w-full flex flex-col gap-6 h-full">
-        <h1 className="text-3xl">Events</h1>
+        <h1 className="text-3xl capitalize">My Bookings</h1>
         <div className=" w-full px-6 rounded-lg grid grid-cols-2 gap-5 h-full overflow-y-scroll">
                 {
                     allEvents&&allEvents.map((event)=>(
@@ -47,4 +47,4 @@ export async function fetchAllEventsFromApi() {
     
 }
 
-export default AllEvents
+export default AllBookings

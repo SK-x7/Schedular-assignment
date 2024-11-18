@@ -11,34 +11,34 @@ function isSlotBooked(bookings,date, startTime, endTime) {
     });
 }
 
-export function generateAvailableDates(instructorAvailabilityFromApi,bookings) {
-    const availableSlots = [];
-    const today = dayjs();
+// export function generateAvailableDates(instructorAvailabilityFromApi,bookings) {
+//     const availableSlots = [];
+//     const today = dayjs();
 
-    for (let i = 0; i < 90; i++) {
-        const date = today.add(i, "day");
-        const dayOfWeek = date.format("dddd").toLowerCase(); // Get the day in lowercase
+//     for (let i = 0; i < 90; i++) {
+//         const date = today.add(i, "day");
+//         const dayOfWeek = date.format("dddd").toLowerCase(); // Get the day in lowercase
 
-        // Check if the day is available in the instructor's schedule
-        if (instructorAvailabilityFromApi[dayOfWeek]?.isAvailable) {
-            const { startTime, endTime } = availabilityFromApi[dayOfWeek];
-            const slotStart = date.set("hour", parseInt(startTime.split(":")[0])).set("minute", parseInt(startTime.split(":")[1]));
-            const slotEnd = date.set("hour", parseInt(endTime.split(":")[0])).set("minute", parseInt(endTime.split(":")[1]));
+//         // Check if the day is available in the instructor's schedule
+//         if (instructorAvailabilityFromApi[dayOfWeek]?.isAvailable) {
+//             const { startTime, endTime } = availabilityFromApi[dayOfWeek];
+//             const slotStart = date.set("hour", parseInt(startTime.split(":")[0])).set("minute", parseInt(startTime.split(":")[1]));
+//             const slotEnd = date.set("hour", parseInt(endTime.split(":")[0])).set("minute", parseInt(endTime.split(":")[1]));
 
-            // Check if the slot is already booked; if not, add to available slots
-            if (!isSlotBooked(bookings,date, slotStart, slotEnd)) {
-                availableSlots.push({
-                    date: date.format("YYYY-MM-DD"),
-                    day: dayOfWeek,
-                    startTime: slotStart.format("HH:mm"),
-                    endTime: slotEnd.format("HH:mm"),
-                });
-            }
-        }
-    }
+//             // Check if the slot is already booked; if not, add to available slots
+//             if (!isSlotBooked(bookings,date, slotStart, slotEnd)) {
+//                 availableSlots.push({
+//                     date: date.format("YYYY-MM-DD"),
+//                     day: dayOfWeek,
+//                     startTime: slotStart.format("HH:mm"),
+//                     endTime: slotEnd.format("HH:mm"),
+//                 });
+//             }
+//         }
+//     }
 
-    return availableSlots;
-}
+//     return availableSlots;
+// }
 
 export function generateAvailableSlots(instructorAvailabilityFromApi, bookings = [],timeGap = 30,duration=120) {
     
