@@ -14,6 +14,22 @@ export async function getBookings(userId,eventId) {
     console.log(data)
     return data;
 }
+
+
+export async function getBookingsOfUser(userId) {
+    
+    const res=await axios.get(`${API_URL}/bookings/getBookingsOfEvent/${userId}`);   
+    if(!res?.data) {
+        alert("Error");
+        console.log("Error fetching bookings of this user from server");
+        return null;
+    };
+    
+    const data=res?.data;
+    console.log(data)
+    return data;
+}
+
 export async function createBooking(obj) {
     
     const res=await axios.post(`${API_URL}/bookings/createBooking`,{
