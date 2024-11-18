@@ -76,11 +76,11 @@ exports.getBookingsOfEvent = async (req,res,next)=>{
   }
   
   
-  
-  exports.getBookingsOfUser = async (req,res,next)=>{
+  exports.getBookingsOfUser = async (req, res, next) => {
     try {
-      // Query the Bookings collection based on instructorId and eventId
-      const bookingQuery = await db.collection("Bookings")
+      // Query the Bookings collection based on studentId
+      const bookingQuery = await db
+        .collection("Bookings")
         .where("studentId", "==", req.params.studentId)
         .get();
   
@@ -90,40 +90,97 @@ exports.getBookingsOfEvent = async (req,res,next)=>{
           status: "success",
           message: "There is no booking yet from this user.",
           length: 0,
+          userBookings: [],
         });
       }
-      
-      
-      const eventIds = bookingQuery.docs.map((doc) => doc.data().eventId);
-      console.log(eventIds);
-      
-      const events = [];
-    for (const eventId of eventIds) {
-      const eventDoc = await db.collection("Events").doc(eventId).get();
-      if (eventDoc.exists) {
-        events.push({ id: eventDoc.id, ...eventDoc.data() });
+  
+      // Extract event IDs and prepare bookings array
+      const bookings = bookingQuery.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const eventIds = bookings.map(booking => booking.eventId);
+  
+      // Fetch event details for each eventId
+      const userBookings = [];
+      for (const booking of bookings) {
+        const eventDoc = await db.collection("Events").doc(booking.eventId).get();
+        if (eventDoc.exists) {
+          // Combine event data with corresponding booking data
+          userBookings.push({
+            id: eventDoc.id,
+            ...eventDoc.data(),
+            startTime: booking.startTime,
+            endTime: booking.endTime,
+          });
+        }
       }
-    }
-      // Map through the results and prepare the response
-      // const bookings = bookingQuery.docs.map(doc => ({
-      //   id: doc.id,
-      //   ...doc.data()
-      // }));
   
       return res.status(200).json({
         status: "success",
         message: "Bookings retrieved successfully",
-        length: events.length,
-        events,
-        // bookings // Sending as an array in case there are multiple bookings with the same criteria
+        length: userBookings.length,
+        userBookings,
       });
-  
     } catch (error) {
       console.error("Error retrieving booking:", error);
       return res.status(500).json({
         status: "error",
         message: "Error retrieving booking",
-        error: error.message
+        error: error.message,
       });
     }
-  }
+  };
+  
+  
+  
+  // exports.getBookingsOfUser = async (req,res,next)=>{
+  //   try {
+  //     // Query the Bookings collection based on instructorId and eventId
+  //     const bookingQuery = await db.collection("Bookings")
+  //       .where("studentId", "==", req.params.studentId)
+  //       .get();
+  
+  //     if (bookingQuery.empty) {
+  //       // No bookings found
+  //       return res.status(200).json({
+  //         status: "success",
+  //         message: "There is no booking yet from this user.",
+  //         length: 0,
+  //       });
+  //     }
+      
+      
+  //     const eventIds = bookingQuery.docs.map((doc) => doc.data().eventId);
+  //     console.log(eventIds);
+      
+  //     const events = [];
+  //   for (const eventId of eventIds) {
+  //     const eventDoc = await db.collection("Events").doc(eventId).get();
+  //     if (eventDoc.exists) {
+  //       events.push({ id: eventDoc.id, ...eventDoc.data() });
+  //     }
+  //   }
+  //     // Map through the results and prepare the response
+  //     const bookings = bookingQuery.docs.map(doc => ({
+  //       id: doc.id,
+  //       ...doc.data()
+  //     }));
+  
+  //     return res.status(200).json({
+  //       status: "success",
+  //       message: "Bookings retrieved successfully",
+  //       length: events.length,
+  //       userBookings:events,
+  //       bookings // Sending as an array in case there are multiple bookings with the same criteria
+  //     });
+  
+  //   } catch (error) {
+  //     console.error("Error retrieving booking:", error);
+  //     return res.status(500).json({
+  //       status: "error",
+  //       message: "Error retrieving booking",
+  //       error: error.message
+  //     });
+  //   }
+  // }

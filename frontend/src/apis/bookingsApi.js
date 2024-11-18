@@ -16,7 +16,14 @@ export async function getBookings(userId,eventId) {
 }
 
 
-export async function getBookingsOfUser(userId) {
+export async function getBookingsOfUser() {
+    let userId;
+    if(localStorage.getItem("userId")){
+        userId=localStorage.getItem("userId");
+    }else{
+        alert("User id not available,login again");
+        return null;
+    }
     
     const res=await axios.get(`${API_URL}/bookings/getBookingsOfEvent/${userId}`);   
     if(!res?.data) {
