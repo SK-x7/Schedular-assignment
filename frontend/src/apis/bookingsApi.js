@@ -52,5 +52,22 @@ export async function createBooking(obj) {
     console.log(data)
     if(data.status==="success") alert("booking created successfully");
     return data;
+}
+
+
+export async function deleteBooking(bookingId) {
+    const res=await axios.delete(`${API_URL}/bookings/deleteBooking/${bookingId}`);   
     
+    if(!res?.data) {
+        alert("Error");
+        console.log("Error deleting booking");
+        return false;
+    };
+    
+    const data=res?.data;
+    console.log(data)
+    if(data.status==="success"&&data.isDeleted===true){
+        return true;
+    };
+    // return data;
 }

@@ -108,8 +108,9 @@ exports.getBookingsOfEvent = async (req,res,next)=>{
         if (eventDoc.exists) {
           // Combine event data with corresponding booking data
           userBookings.push({
-            id: eventDoc.id,
+            id: booking.id,
             ...eventDoc.data(),
+            additionalInfo:booking.additionalInfo,
             startTime: booking.startTime,
             endTime: booking.endTime,
           });
@@ -132,55 +133,44 @@ exports.getBookingsOfEvent = async (req,res,next)=>{
     }
   };
   
-  
-  
-  // exports.getBookingsOfUser = async (req,res,next)=>{
-  //   try {
-  //     // Query the Bookings collection based on instructorId and eventId
-  //     const bookingQuery = await db.collection("Bookings")
-  //       .where("studentId", "==", req.params.studentId)
-  //       .get();
-  
-  //     if (bookingQuery.empty) {
-  //       // No bookings found
-  //       return res.status(200).json({
-  //         status: "success",
-  //         message: "There is no booking yet from this user.",
-  //         length: 0,
-  //       });
-  //     }
+  exports.deleteBooking=async function name(req,res,next) {
+    try{
       
-      
-  //     const eventIds = bookingQuery.docs.map((doc) => doc.data().eventId);
-  //     console.log(eventIds);
-      
-  //     const events = [];
-  //   for (const eventId of eventIds) {
-  //     const eventDoc = await db.collection("Events").doc(eventId).get();
-  //     if (eventDoc.exists) {
-  //       events.push({ id: eventDoc.id, ...eventDoc.data() });
-  //     }
-  //   }
-  //     // Map through the results and prepare the response
-  //     const bookings = bookingQuery.docs.map(doc => ({
-  //       id: doc.id,
-  //       ...doc.data()
-  //     }));
+    
+    console.log(req.params.bookingId);
+    if(!req.params.bookingId){
+      res.status(404).json({
+        status: "fail",
+        message:"Please provide bookingId in url params to delete a booking.",
+      })
+    }
+    
+    const bookingDocRef = db.collection('Bookings').doc(req.params.bookingId);
+    
+    const bookingToDelete = await bookingDocRef.get();
+    if (!bookingToDelete.exists) {
+      console.log(`Booking with ID: ${req.params.bookingId} does not exist.`);
+      return res.status(404).json({
+        status:"fail",
+        isDeleted:false,
+        message: `Booking with ID: ${req.params.bookingId} does not exist`
+      })
+    }
+    
+    await bookingDocRef.delete();
+    
+    res.status(200).json({
+      status: "success",
+      isDeleted: true,
+      message:`Booking with ID: ${req.params.bookingId} deleted successfully`,
+    })
+    
+  }catch(e){
+      res.status(500).json({
+        status: "error",
+        message:`${e.message}`
+      })
+  }
+    
+  }
   
-  //     return res.status(200).json({
-  //       status: "success",
-  //       message: "Bookings retrieved successfully",
-  //       length: events.length,
-  //       userBookings:events,
-  //       bookings // Sending as an array in case there are multiple bookings with the same criteria
-  //     });
-  
-  //   } catch (error) {
-  //     console.error("Error retrieving booking:", error);
-  //     return res.status(500).json({
-  //       status: "error",
-  //       message: "Error retrieving booking",
-  //       error: error.message
-  //     });
-  //   }
-  // }

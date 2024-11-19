@@ -1,5 +1,6 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { getBookingsOfUser } from "../../apis/bookingsApi";
+import { deleteBooking, getBookingsOfUser } from "../../apis/bookingsApi";
+import { toast} from "react-hot-toast";
 // import { getAllEvents } from "../../apis/eventApi";
 
 function AllBookings() {
@@ -9,7 +10,7 @@ function AllBookings() {
     return (    
         <div className=" w-full flex flex-col gap-6 h-full">
         <h1 className="text-3xl capitalize">My Bookings</h1>
-        <div className=" w-full px-6 rounded-lg grid grid-cols-2 2xl:grid-cols-3 gap-5 h-full overflow-y-scroll">
+        <div className=" w-full px-6 rounded-lg grid grid-cols-2 2xl:grid-cols-3 place-content-start gap-5 h-full overflow-y-scroll">
                 {
                     allBookings&&allBookings.map((booking,i)=>(
                         // <Link to={`/create-booking/${booking?.instructorId}/${booking?.id}`} key={i} state={{booking}} onClick={()=>localStorage.setItem("currentEventDuration",booking?.duration)}>
@@ -23,7 +24,7 @@ function AllBookings() {
                             <span className="text-gray-600 text-xs">|</span>
                             <span className="text-gray-600 text-xs">{booking?.duration||"30"} mins</span>
                         </div>
-                        <p className="!text-xs line-clamp-[7] first-letter:capitalize">&quot;{booking?.description||"This is duration"}&quot;</p>
+                        <p className="!text-xs line-clamp-[7] first-letter:capitalize">&quot;{booking?.additionalInfo||"This is additional info od my booking"}&quot;</p>
                         </div>
                         <div className="flex flex-col gap-[2px]">
                             <span className="text-sm">📅 : {booking?.startTime.toString().slice(8,10)}-{booking?.startTime.toString().slice(5,7)}-{booking?.startTime.toString().slice(0,4)}</span>
@@ -32,7 +33,13 @@ function AllBookings() {
                         </div>
                             <div>
                                 
-                            <button className="capitalize flex justify-center items-center bg-red-500 text-white font-semibold py-1 px-3 rounded-lg">Cancel booking</button>
+                            <button className="capitalize flex justify-center items-center bg-red-500 text-white font-semibold py-1 px-3 rounded-lg" onClick={async(e)=>{
+                                e.preventDefault();
+                                const isDeleted=await deleteBooking(booking?.id);
+                                if(isDeleted) toast.success("Booking deleted successfully")
+                                else toast.error("Error deleting booking");
+                                window.location.reload();
+                            }}>Cancel booking</button>
                             </div>
                     </div>
                 // </Link>

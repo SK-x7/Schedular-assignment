@@ -8,7 +8,7 @@ function AllEvents() {
     return (    
         <div className=" w-full flex flex-col gap-6 h-full">
         <h1 className="text-3xl">Events</h1>
-        <div className=" w-full px-6 rounded-lg grid grid-cols-2 gap-5 h-full overflow-y-scroll">
+        <div className=" w-full px-6 rounded-lg grid grid-cols-2 place-content-start gap-5 h-full overflow-y-scroll">
                 {
                     allEvents&&allEvents.map((event)=>(
                         <Link to={`/create-event/${event?.instructorId}/${event?.id}`} key={event.id} state={{event}} onClick={()=>localStorage.setItem("currentEventDuration",event?.duration)}>
